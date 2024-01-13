@@ -181,7 +181,6 @@ export default function EditProject() {
                         <option value="">Users to add</option>
                         {users ? (
                           users.map((user, i) => {
-                            console.log(values.members);
                             if (!values.members?.find((memb) => memb._id === user._id))
                               return (
                                 <option value={user._id} key={i}>
