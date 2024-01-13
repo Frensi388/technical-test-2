@@ -43,13 +43,23 @@ const ProjectList = () => {
               key={hit._id}
               onClick={() => history.push(`/project/${hit._id}`)}
               className="flex justify-between flex-wrap p-3 border border-[#FFFFFF] bg-[#F9FBFD] rounded-[16px] mt-3 cursor-pointer">
-              <div className="flex w-full md:w-[25%] border-r border-[#E5EAEF]">
+              <div className="flex w-full md:w-[25%] border-r border-[#E5EAEF] justify-between">
                 <div className="flex flex-wrap gap-4 items-center">
                   {hit.logo && <img className="w-[85px] h-[85px] rounded-[8px] object-contain	" src={hit.logo} alt="ProjectImage.png" />}
                   <div className="flex flex-col flex-wrap flex-1">
                     <div className="text-[18px] text-[#212325] font-semibold flex flex-wrap">{hit.name}</div>
                   </div>
                 </div>
+                {/* <Added feature */}
+                <div className="pr-4">
+                  Members
+                  <div>
+                    {hit.members.map((memb, i) => {
+                      return <div key={i}>{memb.name}</div>;
+                    })}
+                  </div>
+                </div>
+                {/* Added feature> */}
               </div>
               <div className="w-full md:w-[50%] border-r border-[#E5EAEF] pl-[10px]">
                 <span className="text-[14px] font-medium text-[#212325]">{hit.description ? hit.description : ""}</span>

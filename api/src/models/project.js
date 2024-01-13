@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 
+// For the reference of user schema
+const user = require("./user");
+
 const MODELNAME = "project";
 
 const Schema = new mongoose.Schema({
@@ -22,6 +25,14 @@ const Schema = new mongoose.Schema({
   created_at: { type: Date, default: Date.now },
   last_updated_at: { type: Date, default: Date.now },
   status: { type: String },
+  // <Added field for feature
+  members: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+    },
+  ],
+  // Added field for feature>
 });
 
 const OBJ = mongoose.model(MODELNAME, Schema);

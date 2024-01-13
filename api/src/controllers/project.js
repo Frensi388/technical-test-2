@@ -9,7 +9,10 @@ const PROJECT_ALREADY_EXISTS = "PROJECT_ALREADY_EXISTS";
 
 router.get("/list", passport.authenticate("user", { session: false }), async (req, res) => {
   try {
-    const data = await ProjectObject.find({ ...req.query, organisation: req.user.organisation }).sort("-last_updated_at");
+    // .populate("members") to get the full object of the user otherwise we get only the id
+    const data = await ProjectObject.find({ ...req.query, organisation: req.user.organisation })
+      .populate("members")
+      .sort("-last_updated_at");
     return res.status(200).send({ ok: true, data });
   } catch (error) {
     console.log(error);
@@ -19,7 +22,8 @@ router.get("/list", passport.authenticate("user", { session: false }), async (re
 
 router.get("/:id", passport.authenticate("user", { session: false }), async (req, res) => {
   try {
-    const data = await ProjectObject.find({ _id: req.params.id });
+    // sending the right data format
+    const [data] = await ProjectObject.find({ _id: req.params.id }).populate("members");
     return res.status(200).send({ ok: true, data });
   } catch (error) {
     console.log(error);
@@ -40,7 +44,9 @@ router.post("/", passport.authenticate("user", { session: false }), async (req, 
 
 router.get("/", passport.authenticate("user", { session: false }), async (req, res) => {
   try {
-    const data = await ProjectObject.find({ ...req.query, organisation: req.user.organisation }).sort("-last_updated_at");
+    const data = await ProjectObject.find({ ...req.query, organisation: req.user.organisation })
+      .populate("members")
+      .sort("-last_updated_at");
     return res.status(200).send({ ok: true, data });
   } catch (error) {
     console.log(error);

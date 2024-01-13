@@ -9,6 +9,7 @@ import api from "../../services/api";
 import toast from "react-hot-toast";
 
 export default function EditProject() {
+  const [users, setUsers] = useState(null);
   const [project, setProject] = useState(null);
   const [bufferOtherLink, setBufferOtherLink] = useState("");
   const [bufferOtherLinkLabel, setBufferOtherLinkLabel] = useState("");
@@ -17,7 +18,15 @@ export default function EditProject() {
   useEffect(() => {
     (async () => {
       const { data: u } = await api.get(`/project/${id}`);
+
       setProject(u);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await api.get("/user");
+      setUsers(data);
     })();
   }, []);
 
@@ -56,182 +65,256 @@ export default function EditProject() {
                 toast.error("Some Error!");
               }
             }}>
-            {({ values, handleChange, handleSubmit, isSubmitting }) => (
-              <React.Fragment>
-                <div className="flex gap-4 pl-4 pt-4">
-                  {project.logo && <img className="w-[85px] h-[85px] border border-[#E5EAEF] rounded-[8px]" src={project.logo} alt="ProjectImage.png" />}
-                </div>
+            {({ values, setValues, handleChange, handleSubmit, isSubmitting }) => {
+              // <Function for added feature
+              const onMemberAdd = (id) => {
+                setValues((prev) => {
+                  const user = users.find((user) => user._id === id);
 
-                <div className="py-3 px-4">
-                  <div className="flex gap-4 flex-wrap">
-                    <div className="w-full md:w-[260px] mt-2">
-                      <div className="text-[14px] text-[#212325] font-medium	">Name of project</div>
-                      <input className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="name" disabled value={values.name} onChange={handleChange} />
-                    </div>
-                    <div className="w-full md:w-[260px] mt-2">
-                      <div className="text-[14px] text-[#212325] font-medium	">Lead by name</div>
-                      <input className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="lead" value={values.lead} onChange={handleChange} />
-                    </div>
-                    <div className="w-full md:w-[260px] mt-2">
-                      <div className="text-[14px] text-[#212325] font-medium	">Status</div>
-                      <select className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="status" value={values.status} onChange={handleChange}>
-                        <option value=""></option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                      </select>
-                    </div>
+                  if (prev.members) {
+                    prev.members = [...prev.members, user];
+                  } else {
+                    prev.members = [user];
+                  }
+
+                  prev.members.sort((a, b) => a.name.localeCompare(b.name));
+
+                  return prev;
+                });
+              };
+
+              const removeMember = (e) => {
+                setValues((prev) => {
+                  let members = [];
+                  prev.members.map((memb) => {
+                    if (memb._id !== e.target.id) {
+                      members.push(memb);
+                    }
+                  });
+                  prev.members = members;
+                  return prev;
+                });
+              };
+              // Function for added feature>
+
+              return (
+                <React.Fragment>
+                  <div className="flex gap-4 pl-4 pt-4">
+                    {project.logo && <img className="w-[85px] h-[85px] border border-[#E5EAEF] rounded-[8px]" src={project.logo} alt="ProjectImage.png" />}
                   </div>
-                  <div className="flex gap-4 mt-3">
-                    <div className="w-full md:w-[260px]">
-                      <div className="text-[14px] text-[#212325] font-medium	">Budget max / month</div>
-                      <input
-                        className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]"
-                        type="number"
-                        name="budget_max_monthly"
-                        value={values.budget_max_monthly}
-                        onChange={handleChange}
-                      />
+
+                  <div className="py-3 px-4">
+                    <div className="flex gap-4 flex-wrap">
+                      <div className="w-full md:w-[260px] mt-2">
+                        <div className="text-[14px] text-[#212325] font-medium	">Name of project</div>
+                        <input className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="name" disabled value={values.name} onChange={handleChange} />
+                      </div>
+                      <div className="w-full md:w-[260px] mt-2">
+                        <div className="text-[14px] text-[#212325] font-medium	">Lead by name</div>
+                        <input className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="lead" value={values.lead} onChange={handleChange} />
+                      </div>
+                      <div className="w-full md:w-[260px] mt-2">
+                        <div className="text-[14px] text-[#212325] font-medium	">Status</div>
+                        <select className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="status" value={values.status} onChange={handleChange}>
+                          <option value=""></option>
+                          <option value="active">Active</option>
+                          <option value="inactive">Inactive</option>
+                        </select>
+                      </div>
                     </div>
-                    <div className="w-full md:w-[260px] ">
-                      <div className="text-[14px] text-[#212325] font-medium	">Payment cycle</div>
+                    <div className="flex gap-4 mt-3">
+                      <div className="w-full md:w-[260px]">
+                        <div className="text-[14px] text-[#212325] font-medium	">Budget max / month</div>
+                        <input
+                          className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]"
+                          type="number"
+                          name="budget_max_monthly"
+                          value={values.budget_max_monthly}
+                          onChange={handleChange}
+                        />
+                      </div>
+                      <div className="w-full md:w-[260px] ">
+                        <div className="text-[14px] text-[#212325] font-medium	">Payment cycle</div>
+                        <select
+                          className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]"
+                          name="paymentCycle"
+                          value={values.paymentCycle}
+                          onChange={handleChange}>
+                          <option value=""></option>
+                          <option value="MONTHLY">Monthly</option>
+                          <option value="ONE_TIME">One time</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="w-full mt-3">
+                      <div className="text-[14px] text-[#212325] font-medium">Description</div>
+                      <textarea
+                        className="w-full border border-[#ced4da] rounded-[10px] text-[14px] font-normal p-2 mt-2  focus:outline-none focus:ring focus:ring-[#80bdff]"
+                        type="textarea"
+                        rows="5"
+                        placeholder="Please your comment...."
+                        name="description"
+                        value={values.description}
+                        onChange={handleChange}></textarea>
+                    </div>
+
+                    <div className="w-full mt-3">
+                      <div className="text-[14px] text-[#212325] font-medium">Objective</div>
+                      <textarea
+                        className="w-full border border-[#ced4da] rounded-[10px] text-[14px] font-normal p-2 mt-2  focus:outline-none focus:ring focus:ring-[#80bdff]"
+                        type="textarea"
+                        rows="5"
+                        placeholder="Please your comment...."
+                        name="objective"
+                        value={values.objective}
+                        onChange={handleChange}></textarea>
+                    </div>
+                    {/* <Added feature */}
+                    <div className="w-full md:w-[260px] mt-2">
+                      <div className="text-[14px] text-[#212325] font-medium	">Add members</div>
                       <select
                         className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]"
-                        name="paymentCycle"
-                        value={values.paymentCycle}
-                        onChange={handleChange}>
-                        <option value=""></option>
-                        <option value="MONTHLY">Monthly</option>
-                        <option value="ONE_TIME">One time</option>
+                        name="status"
+                        value="Users to add"
+                        onChange={(e) => onMemberAdd(e.target.value)}>
+                        <option value="">Users to add</option>
+                        {users ? (
+                          users.map((user, i) => {
+                            console.log(values.members);
+                            if (!values.members?.find((memb) => memb._id === user._id))
+                              return (
+                                <option value={user._id} key={i}>
+                                  {user.name}
+                                </option>
+                              );
+                          })
+                        ) : (
+                          <Loader />
+                        )}
                       </select>
                     </div>
-                  </div>
 
-                  <div className="w-full mt-3">
-                    <div className="text-[14px] text-[#212325] font-medium">Description</div>
-                    <textarea
-                      className="w-full border border-[#ced4da] rounded-[10px] text-[14px] font-normal p-2 mt-2  focus:outline-none focus:ring focus:ring-[#80bdff]"
-                      type="textarea"
-                      rows="5"
-                      placeholder="Please your comment...."
-                      name="description"
-                      value={values.description}
-                      onChange={handleChange}></textarea>
-                  </div>
-
-                  <div className="w-full mt-3">
-                    <div className="text-[14px] text-[#212325] font-medium">Objective</div>
-                    <textarea
-                      className="w-full border border-[#ced4da] rounded-[10px] text-[14px] font-normal p-2 mt-2  focus:outline-none focus:ring focus:ring-[#80bdff]"
-                      type="textarea"
-                      rows="5"
-                      placeholder="Please your comment...."
-                      name="objective"
-                      value={values.objective}
-                      onChange={handleChange}></textarea>
-                  </div>
-                  <div className="text-xl mt-8">Links</div>
-                  <div className="w-full mt-3">
-                    <div className="text-[14px] text-[#212325] font-medium	">Website</div>
-                    <input className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="website" value={values.website} onChange={handleChange} />
-                  </div>
-
-                  <div className="w-full mt-3">
-                    <div className="text-[14px] text-[#212325] font-medium	">Autres</div>
-                    {(values.links || []).map((link) => {
-                      return (
-                        <div className="flex flex-1 flex-row mt-2 items-center gap-1">
-                          <div className="flex gap-1 flex-1 items-center">
-                            <input
-                              className="projectsInput mt-0 text-[14px] font-normal text-[#212325] rounded-[10px]"
-                              value={link.label}
-                              onChange={(e) => {
-                                const links = values.links.reduce((prev, current) => {
-                                  const tempLink = current;
-                                  if (current.url === link.url) {
-                                    tempLink.label = e.target.value;
-                                  }
-                                  return [...prev, tempLink];
-                                }, []);
-                                handleChange({ target: { value: links, name: "links" } });
-                              }}
-                            />
-                            <input
-                              className="projectsInput mt-0 text-[14px] font-normal text-[#212325] rounded-[10px]"
-                              value={link.url}
-                              onChange={(e) => {
-                                const links = values.links.reduce((prev, current) => {
-                                  const tempLink = current;
-                                  if (current.label === link.label) {
-                                    tempLink.url = e.target.value;
-                                  }
-                                  return [...prev, tempLink];
-                                }, []);
-                                handleChange({ target: { value: links, name: "links" } });
-                              }}
-                            />
+                    {values.members && (
+                      <div className="w-full md:w-[260px] mt-2">
+                        {values.members?.map((memb, i) => (
+                          <div className="flex justify-between items-center border border-solid border-black rounded-lg mb-1" key={i}>
+                            <div className="pl-3 text text-[14px] text-[#212325] font-small">{memb.name}</div>
+                            <span
+                              className="bg-red-400 p-1  border border-solid border-black inline-block rounded-[5px] cursor-pointer hover:bg-red-500"
+                              id={memb._id}
+                              onClick={removeMember}>
+                              &times;
+                            </span>
                           </div>
-                          <div className={`flex justify-center cursor-pointer text-xl hover:text-red-500`}>
-                            <MdDeleteForever
-                              onClick={() => {
-                                const newLinks = values.links.filter((l) => l.url !== link.url);
-                                handleChange({ target: { value: newLinks, name: "links" } });
-                              }}
-                            />
+                        ))}
+                      </div>
+                    )}
+                    {/* Added feature> */}
+                    <div className="text-xl mt-8">Links</div>
+                    <div className="w-full mt-3">
+                      <div className="text-[14px] text-[#212325] font-medium	">Website</div>
+                      <input className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="website" value={values.website} onChange={handleChange} />
+                    </div>
+
+                    <div className="w-full mt-3">
+                      <div className="text-[14px] text-[#212325] font-medium	">Autres</div>
+                      {(values.links || []).map((link) => {
+                        return (
+                          <div className="flex flex-1 flex-row mt-2 items-center gap-1">
+                            <div className="flex gap-1 flex-1 items-center">
+                              <input
+                                className="projectsInput mt-0 text-[14px] font-normal text-[#212325] rounded-[10px]"
+                                value={link.label}
+                                onChange={(e) => {
+                                  const links = values.links.reduce((prev, current) => {
+                                    const tempLink = current;
+                                    if (current.url === link.url) {
+                                      tempLink.label = e.target.value;
+                                    }
+                                    return [...prev, tempLink];
+                                  }, []);
+                                  handleChange({ target: { value: links, name: "links" } });
+                                }}
+                              />
+                              <input
+                                className="projectsInput mt-0 text-[14px] font-normal text-[#212325] rounded-[10px]"
+                                value={link.url}
+                                onChange={(e) => {
+                                  const links = values.links.reduce((prev, current) => {
+                                    const tempLink = current;
+                                    if (current.label === link.label) {
+                                      tempLink.url = e.target.value;
+                                    }
+                                    return [...prev, tempLink];
+                                  }, []);
+                                  handleChange({ target: { value: links, name: "links" } });
+                                }}
+                              />
+                            </div>
+                            <div className={`flex justify-center cursor-pointer text-xl hover:text-red-500`}>
+                              <MdDeleteForever
+                                onClick={() => {
+                                  const newLinks = values.links.filter((l) => l.url !== link.url);
+                                  handleChange({ target: { value: newLinks, name: "links" } });
+                                }}
+                              />
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        const newLink = {
-                          label: bufferOtherLinkLabel || bufferOtherLink,
-                          url: bufferOtherLink,
-                        };
-                        handleChange({ target: { value: [...values.links, newLink], name: "links" } });
-                        setBufferOtherLink("");
-                        setBufferOtherLinkLabel("");
-                      }}>
-                      <input
-                        className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]"
-                        name="other-links-label"
-                        value={bufferOtherLinkLabel}
-                        onChange={(e) => {
-                          setBufferOtherLinkLabel(e.target.value);
-                        }}
-                        placeholder="My super website"
-                      />
-                      <input
-                        className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]"
-                        required
-                        name="other-links"
-                        value={bufferOtherLink}
-                        onChange={(e) => {
-                          setBufferOtherLink(e.target.value);
-                        }}
-                        placeholder="https://mysuperwebsite.com"
-                      />
-                      {bufferOtherLink ? (
-                        <button className="px-4 py-2 rounded-xl bg-[#0560FD] text-white mt-2" type="submit">
-                          ajouter
-                        </button>
-                      ) : null}
-                    </form>
+                        );
+                      })}
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          const newLink = {
+                            label: bufferOtherLinkLabel || bufferOtherLink,
+                            url: bufferOtherLink,
+                          };
+                          handleChange({ target: { value: [...values.links, newLink], name: "links" } });
+                          setBufferOtherLink("");
+                          setBufferOtherLinkLabel("");
+                        }}>
+                        <input
+                          className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]"
+                          name="other-links-label"
+                          value={bufferOtherLinkLabel}
+                          onChange={(e) => {
+                            setBufferOtherLinkLabel(e.target.value);
+                          }}
+                          placeholder="My super website"
+                        />
+                        <input
+                          className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]"
+                          required
+                          name="other-links"
+                          value={bufferOtherLink}
+                          onChange={(e) => {
+                            setBufferOtherLink(e.target.value);
+                          }}
+                          placeholder="https://mysuperwebsite.com"
+                        />
+                        {bufferOtherLink ? (
+                          <button className="px-4 py-2 rounded-xl bg-[#0560FD] text-white mt-2" type="submit">
+                            ajouter
+                          </button>
+                        ) : null}
+                      </form>
+                    </div>
                   </div>
-                </div>
-                <div className="flex ml-3 mt-2">
-                  <LoadingButton
-                    className="ml-[10px] bg-[#0560FD] text-[16px] font-medium text-[#fff] py-[12px] px-[22px] rounded-[10px]"
-                    loading={isSubmitting}
-                    onClick={handleSubmit}>
-                    Update
-                  </LoadingButton>
-                  <button className="ml-[10px] bg-[#F43F5E] text-[16px] font-medium text-[#fff] py-[12px] px-[22px] rounded-[10px]" onClick={deleteData}>
-                    Delete
-                  </button>
-                </div>
-              </React.Fragment>
-            )}
+                  <div className="flex ml-3 mt-2">
+                    <LoadingButton
+                      className="ml-[10px] bg-[#0560FD] text-[16px] font-medium text-[#fff] py-[12px] px-[22px] rounded-[10px]"
+                      loading={isSubmitting}
+                      onClick={handleSubmit}>
+                      Update
+                    </LoadingButton>
+                    <button className="ml-[10px] bg-[#F43F5E] text-[16px] font-medium text-[#fff] py-[12px] px-[22px] rounded-[10px]" onClick={deleteData}>
+                      Delete
+                    </button>
+                  </div>
+                </React.Fragment>
+              );
+            }}
           </Formik>
         </div>
       </div>
