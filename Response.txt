@@ -20,3 +20,5 @@ Question 3 - Do you have any feedback about the code / architecture of the proje
 
   I am familiar with react coding and I undestood it fast, the code is clean and the structure is organised and easy to update. The problem that I might have encountered was a little bit the database part as I am not that 
  familiar with mongoDB but anyway my experience with backend have given me the intuition to understand what the code does and go where I needed to.
+
+Note: The part of the code modified or added have a short explaination commented
