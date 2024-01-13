@@ -1,0 +1,21 @@
+Question 1 - What bugs did you find? How did you solve these and why?
+Bugs solved:
+
+The bugs below were the most important once also because they encoutered in my navigation way of the app which aligns with a basic navigation of the app, but I could also figure out other bugs or improvements that can be done.
+
+1. update button (adding onClick prop for the component)
+2. "Name input field" (explicitely setting name field of user to the username value, as the name of the object does not correspond with the name of the field in the schema )
+3. project data format (changing the format the data is send to front to get the results that code was prepared for)
+4. sign-in problem (removing toLowerCase() because I could not login as the name is saved as it is given and it was compared with the lowercase version)
+
+Question 2 - Which feature did you develop and why?
+
+There were a lot of ideas on what to add but considering that it is an app that helps in organising the work, I thought that a fast feature I could implement was to add the the chance for the creator of the project to add other users that already exist in the database that want to join the project. Of course there is place to develop the fefature more, but considering a fast implementation I think it was appropriate.
+
+Feature added:
+-The creator of the group can add members, and members are shown in project
+
+Question 3 - Do you have any feedback about the code / architecture of the project and what was the difficulty you encountered while doing it?
+
+I am familiar with react coding and I undestood it fast, the code is clean and the structure is organised and easy to update. The problem that I might have encountered was a little bit the database part as I am not that familiar with mongoDB but anyway my experience with backend have given me the intuition to understand what the code does and go where I needed to.
+
