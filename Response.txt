@@ -4,7 +4,7 @@ Question 1 - What bugs did you find? How did you solve these and why?
  done.
   Bugs solved:
     1. update button (adding onClick prop for the component)
-    2. "Name input field" (explicitely setting name field of user to the username value, as the name of the object does not correspond with the name of the field in the schema )
+    2. "Name input field" (explicitely setting "name" field of user to the "username" value from frontend, as the name of the object does not correspond with the name of the field in the schema )
     3. project data format (changing the format the data is send to front to get the results that code was prepared for)
     4. sign-in problem (removing toLowerCase() because I could not login as the name is saved as it is given and it was compared with the lowercase version)
 
