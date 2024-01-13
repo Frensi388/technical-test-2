@@ -1,6 +1,7 @@
 Question 1 - What bugs did you find? How did you solve these and why?
 
-  The bugs below were the most important once also because they encoutered in my navigation way of the app which aligns with a basic navigation of the app, but I could also figure out other bugs or improvements that can be    done.
+  The bugs below were the most important once also because they encoutered in my navigation way of the app which aligns with a basic navigation of the app, but I could also figure out other bugs or improvements that can be  
+ done.
   Bugs solved:
     1. update button (adding onClick prop for the component)
     2. "Name input field" (explicitely setting name field of user to the username value, as the name of the object does not correspond with the name of the field in the schema )
@@ -19,4 +20,3 @@ Question 3 - Do you have any feedback about the code / architecture of the proje
 
   I am familiar with react coding and I undestood it fast, the code is clean and the structure is organised and easy to update. The problem that I might have encountered was a little bit the database part as I am not that 
  familiar with mongoDB but anyway my experience with backend have given me the intuition to understand what the code does and go where I needed to.
-
